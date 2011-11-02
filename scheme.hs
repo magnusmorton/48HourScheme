@@ -45,10 +45,10 @@ parseExpr  = parseAtom
 		 <|> parseNumber
 		 <|> parseQuoted
 		 <|> do 
-			char '('
-			x <- (try parseList) <|> parseDottedList
-			char ')'
-			return x
+				char '('
+				x <- (try parseList) <|> parseDottedList
+				char ')'
+				return x
 
 parseList :: Parser LispVal
 parseList = liftM List $ sepBy parseExpr spaces
@@ -66,7 +66,13 @@ parseQuoted = do
 	return $ List [Atom "quote", x]
 
                
-	
+-- Evaluation
+showVal :: LispVal -> String
+showVal (String contents) = "\"" ++ contents ++ "\""
+showVal (Atom name) = name
+showVal (Number contents) = show contents
+showVal (Bool True) = "#t"
+showVal (Bool False) = "#f"
 
 main :: IO ()
 main = do
